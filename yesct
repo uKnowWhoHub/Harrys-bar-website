@@ -1,0 +1,69 @@
+@echo off
+setlocal
+
+set "inputFile=your_text_file.txt"
+set "timeoutSeconds=600"
+set "startTime=%time%"
+
+echo Starting to type the contents of "%inputFile%" for %timeoutSeconds% seconds...
+echo Press Ctrl+C to stop early.
+echo.
+
+:read_and_type
+set "line="
+set /p "line=" < "%inputFile%"
+
+if errorlevel 1 (
+    echo.
+    echo End of file reached.
+    goto :wait_for_continue
+)
+
+echo %line%
+REM You can add a small delay here if needed, e.g., "ping -n 1 127.0.0.1 >nul" for a 1-second delay
+
+:: Check if the timeout has been reached
+set "currentTime=%time%"
+set /a "elapsedSeconds=((%currentTime:~0,2%*3600 + %currentTime:~3,2%*60 + %currentTime:~6,2%) - (%startTime:~0,2%*3600 + %startTime:~3,2%*60 + %startTime:~6,2%) + 86400) %% 86400"
+
+if %elapsedSeconds% lss %timeoutSeconds% goto :read_and_type
+
+echo.
+echo Time limit of %timeoutSeconds% seconds reached.
+echo.
+
+:wait_for_continue
+pause
+endlocal
+
+Explanation:
+ * @echo off: Disables the display of commands in the command prompt.
+ * setlocal: Creates a local environment for the script, ensuring that any variable changes don't affect the global environment.
+ * set "inputFile=your_text_file.txt": Defines a variable inputFile to store the name of your text file. Remember to replace "your_text_file.txt" with the actual path to your file.
+ * set "timeoutSeconds=600": Defines a variable timeoutSeconds and sets it to 600 (which is 10 minutes).
+ * set "startTime=%time%": Records the starting time of the script. The %time% variable holds the current system time.
+ * echo Starting to type...: Displays a starting message.
+ * :read_and_type: This is a label that marks the beginning of the loop.
+ * set "line=": Clears the line variable before reading a new line.
+ * set /p "line=" < "%inputFile%": Reads one line from the file specified by %inputFile% and stores it in the line variable.
+ * if errorlevel 1 (...): This checks the exit code of the set /p command. If set /p reaches the end of the file, it sets the errorlevel to 1. In this case, it jumps to the :wait_for_continue label.
+ * echo %line%: Displays the content of the line variable (the line read from the file).
+ * REM You can add a small delay here...: This is a commented-out line. If the text in your file appears too quickly, you can uncomment the ping command to introduce a 1-second delay between each line.
+ * Time Check:
+   * set "currentTime=%time%": Gets the current time.
+   * set /a "elapsedSeconds=(...) %% 86400": This is a bit more complex. It calculates the difference in seconds between the currentTime and startTime. It handles cases where the time might cross midnight.
+     * It extracts the hours, minutes, and seconds from both time variables.
+     * It converts these into total seconds since the beginning of the day.
+     * It subtracts the start time in seconds from the current time in seconds.
+     * The %% 86400 part ensures the result stays within a 24-hour range (86400 seconds in a day).
+   * if %elapsedSeconds% lss %timeoutSeconds% goto :read_and_type: If the elapsed time in seconds is less than the timeoutSeconds, the script jumps back to the :read_and_type label to process the next line.
+ * echo Time limit reached.: Displays a message when the 10-minute limit is hit.
+ * :wait_for_continue: This label marks the point where the script pauses.
+ * pause: Displays the message "Press any key to continue . . ." and waits for the user to press a key before proceeding.
+ * endlocal: Restores the environment to its state before the setlocal command.
+How to Use:
+ * Save the code: Open a text editor (like Notepad) and paste the code into it.
+ * Replace the placeholder: Change "your_text_file.txt" in the line set "inputFile=your_text_file.txt" to the actual path and name of your text file. For example, if your file is named my_document.txt and is in the same directory as the batch file, you would change it to set "inputFile=my_document.txt". If it's in a different location, use the full path (e.g., set "inputFile=C:\Users\YourName\Documents\my_document.txt").
+ * Save as .bat: Save the file with a .bat extension (e.g., type_file.bat). Make sure the "Save as type" in your text editor is set to "All Files (*.*)".
+ * Run the batch file: Double-click the .bat file to execute it.
+The script will then start typing the contents of your text file to the command prompt for a maximum of 10 minutes. After 10 minutes (or if it reaches the end of the file sooner), it will stop and display the "Press any key to continue . . ." message. You can then press any key to close the command prompt.

@@ -1,0 +1,34 @@
+@echo off
+setlocal
+
+set "inputFile=index.txt"
+set "timeoutSeconds=600"
+set "startTime=%time%"
+
+echo Starting to type the contents of "%inputFile%" for %timeoutSeconds% seconds...
+echo Press Ctrl+C to stop early.
+echo.
+
+for /F "delims=" %%a in ("%inputFile%") do (
+    set "line=%%a"
+    echo !line!
+
+    REM You can add a small delay here if needed, e.g., "ping -n 1 127.0.0.1 >nul" for a 1-second delay
+
+    :: Check if the timeout has been reached
+    set "currentTime=%time%"
+    set /a "elapsedSeconds=((%currentTime:~0,2%*3600 + %currentTime:~3,2%*60 + %currentTime:~6,2%) - (%startTime:~0,2%*3600 + %startTime:~3,2%*60 + %startTime:~6,2%) + 86400) %% 86400"
+
+    if %elapsedSeconds% geq %timeoutSeconds% (
+        echo.
+        echo Time limit of %timeoutSeconds% seconds reached.
+        goto :wait_for_continue
+    )
+)
+
+echo.
+echo End of file reached.
+
+:wait_for_continue
+pause
+endlocal

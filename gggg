@@ -1,0 +1,29 @@
+@echo off
+setlocal enabledelayedexpansion
+
+:: Set delay time in milliseconds (e.g., 100 = 0.1 sec between each character)
+set delay=50
+
+:: Read each line from index.txt
+for /f "delims=" %%A in (index.txt) do (
+    set "line=%%A"
+    call :TypeSlow "!line!"
+)
+
+pause
+exit /b
+
+:TypeSlow
+set "str=%~1"
+set /a len=0
+
+:TypeLoop
+set "char=!str:~%len%,1!"
+if "!char!"=="" (
+    echo.
+    exit /b
+)
+<nul set /p =!char!
+timeout /t 0 /nobreak >nul
+set /a len+=1
+goto :TypeLoop

@@ -1,8 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bar Tab Tracker</title>
   <style>
     :root {
@@ -52,16 +51,6 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.5);
       animation: fadeIn 0.3s ease forwards;
     }
-    input, select {
-      padding: 10px;
-      font-size: 16px;
-      width: 100%;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      border: none;
-      background: var(--highlight);
-      color: var(--text);
-    }
     pre {
       white-space: pre-wrap;
       background: var(--highlight);
@@ -82,38 +71,34 @@
 </head>
 <body>
   <div class="card fade" id="app">
-    <h2>Modern Bar Tab Tracker</h2>
-
-    <div id="employeeSelect">
-      <label>Select Your Name</label>
-      <select onchange="selectEmployee(this.value)">
-        <option value="">-- Choose --</option>
-        <option>Tina</option>
-        <option>Cameron</option>
-        <option>Chloe</option>
-        <option>Danielle</option>
-        <option>Lily</option>
-      </select>
-    </div>
-
-    <div class="hidden" id="tabInterface">
-      <h3>Tabs for <span id="employeeName"></span></h3>
-      <button onclick="startNewTab()">+ New Tab</button>
-      <div id="tabButtons" class="grid"></div>
-
-      <h3 class="hidden" id="currentTabTitle"></h3>
-      <div class="hidden" id="itemGrid" class="grid"></div>
-      <pre id="tabDisplay"></pre>
-
-      <div class="hidden" id="tabActions">
-        <button onclick="saveTab()">Save</button>
-        <button onclick="showSummary()">Pay</button>
-        <button onclick="resetUI()">Back</button>
-      </div>
-    </div>
+    <h2>Modern Bar Tab Tracker</h2><div id="employeeSelect">
+  <p>Select Your Name:</p>
+  <div class="grid">
+    <button onclick="selectEmployee('Tina')">Tina</button>
+    <button onclick="selectEmployee('Cameron')">Cameron</button>
+    <button onclick="selectEmployee('Chloe')">Chloe</button>
+    <button onclick="selectEmployee('Danielle')">Danielle</button>
+    <button onclick="selectEmployee('Lily')">Lily</button>
   </div>
+</div>
 
-  <script>
+<div class="hidden" id="tabInterface">
+  <h3>Tabs for <span id="employeeName"></span></h3>
+  <button onclick="startNewTab()">+ New Tab</button>
+  <div id="tabButtons" class="grid"></div>
+
+  <h3 class="hidden" id="currentTabTitle"></h3>
+  <div class="hidden" id="itemGrid" class="grid"></div>
+  <pre id="tabDisplay"></pre>
+
+  <div class="hidden" id="tabActions">
+    <button onclick="saveTab()">Save</button>
+    <button onclick="showSummary()">Pay</button>
+    <button onclick="resetUI()">Back</button>
+  </div>
+</div>
+
+  </div>  <script>
     const items = [
       "Carling", "Guinness", "Vodka + Coke", "Double Vodka",
       "Tequila Rose", "Sambuca", "Jäger", "Crisps", "Bacon Fries"
@@ -217,6 +202,5 @@
       document.getElementById("itemGrid").classList.add("hidden");
       document.getElementById("tabActions").classList.add("hidden");
     }
-  </script>
-</body>
+  </script></body>
 </html>

@@ -1,4 +1,7 @@
-<!DOCTYPE html><html lang="en">
+Here is the full updated HTML for your till-style bar tab tracker with employee selection, simplified contribution tracking, pay summary, and categorized drink buttons:
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Bar Tab Tracker</title>
@@ -10,9 +13,7 @@
       margin: 0;
       padding: 10px;
     }
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
     button {
       font-size: 14px;
       font-weight: bold;
@@ -48,10 +49,32 @@
       font-size: 16px;
       z-index: 999;
     }
+    #pay-summary {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      color: black;
+      padding: 20px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 400px;
+      z-index: 1000;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
   </style>
 </head>
 <body>
-<div class="popup" id="save-popup">Tab Saved!</div><div id="employee-select">
+<div class="popup" id="save-popup">Tab Saved!</div>
+<div id="pay-summary" class="hidden">
+  <h3>Confirm Payment</h3>
+  <div id="summary-content"></div>
+  <button class="green" onclick="confirmPayment()">Confirm</button>
+  <button class="red" onclick="cancelPayment()">Cancel</button>
+</div>
+
+<div id="employee-select">
   <h2>Select Employee</h2>
   <div class="grid">
     <button class="blue" onclick="selectEmployee('Tina')">Tina</button>
@@ -60,16 +83,22 @@
     <button class="blue" onclick="selectEmployee('Danielle')">Danielle</button>
     <button class="blue" onclick="selectEmployee('Lily')">Lily</button>
   </div>
-</div><div id="home" class="hidden">
+</div>
+
+<div id="home" class="hidden">
   <h2>Tabs</h2>
   <div class="grid" id="tab-buttons"></div>
   <button class="green" onclick="showNewTab()">New Tab</button>
   <button class="orange" onclick="showPaidTabs()">Paid Tabs</button>
-</div><div id="new-tab" class="hidden">
+</div>
+
+<div id="new-tab" class="hidden">
   <input id="new-name" placeholder="Enter name">
   <button class="green" onclick="startTab()">Start Tab</button>
   <button class="red" onclick="returnToEmployeeScreen()">Cancel</button>
-</div><div id="tab-view" class="hidden">
+</div>
+
+<div id="tab-view" class="hidden">
   <div class="topbar">
     <h2 id="tab-name"></h2>
     <button class="gray" onclick="viewContributions()">Who Added What</button>
@@ -87,11 +116,15 @@
   <button class="green" onclick="saveTab()">Save</button>
   <button class="orange" onclick="payTab()">Pay</button>
   <button class="red" onclick="returnToEmployeeScreen()">Back</button>
-</div><div id="paid-tabs" class="hidden">
+</div>
+
+<div id="paid-tabs" class="hidden">
   <h2>Paid Tabs</h2>
   <pre id="paid-content"></pre>
   <button class="red" onclick="returnToEmployeeScreen()">Back</button>
-</div><script>
+</div>
+
+<script>
   const taps = ["Carling", "Fosters", "Strongbow", "Guinness", "Madri"];
   const spirits = ["Vodka + Coke", "Smirnoff", "Double Vodka", "Kraken + Coke"];
   const shots = ["Tequila Rose", "Fireball", "Sambuca", "Jäger"];
@@ -205,13 +238,40 @@
   }
 
   function viewContributions() {
-    const msg = Object.entries(contributions)
-      .map(([item, list]) => `${item}: ${list.join(", ")}`)
-      .join("\n");
-    alert(msg || "No contributions recorded yet.");
+    const personMap = {};
+    for (let item in contributions) {
+      contributions[item].forEach(name => {
+        if (!personMap[name]) personMap[name] = {};
+        personMap[name][item] = (personMap[name][item] || 0) + 1;
+      });
+    }
+    let msg = "";
+    for (let person in personMap) {
+      msg += `${person}:\n`;
+      for (let item in personMap[person]) {
+        msg += `  - ${item} x${personMap[person][item]}\n`;
+      }
+    }
+    alert(msg || "No contributions recorded.");
   }
 
   function payTab() {
+    const content = document.getElementById("summary-content");
+    let html = `<strong>Tab:</strong> ${currentName}<br><strong>Employee:</strong> ${currentEmployee}<br><br>`;
+    let total = 0;
+    for (let item in currentTab) {
+      const count = currentTab[item];
+      const price = prices[item] || 0;
+      const itemTotal = price * count;
+      total += itemTotal;
+      html += `${item} x${count} @ £${price.toFixed(2)} = £${itemTotal.toFixed(2)}<br>`;
+    }
+    html += `<br><strong>Total: £${total.toFixed(2)}</strong>`;
+    content.innerHTML = html;
+    document.getElementById("pay-summary").classList.remove("hidden");
+  }
+
+  function confirmPayment() {
     let total = 0;
     for (let item in currentTab) {
       total += (prices[item] || 0) * currentTab[item];
@@ -226,7 +286,12 @@
     paidTabs.push(record);
     localStorage.setItem("__PAID__", JSON.stringify(paidTabs));
     localStorage.removeItem(currentName);
+    document.getElementById("pay-summary").classList.add("hidden");
     returnToEmployeeScreen();
+  }
+
+  function cancelPayment() {
+    document.getElementById("pay-summary").classList.add("hidden");
   }
 
   function showPaidTabs() {
@@ -238,5 +303,9 @@
       "\n--------------------------------------"
     ).join("\n");
   }
-</script></body>
+</script>
+</body>
 </html>
+
+Let me know when you’re ready to package this as an Android app or want features like item removal/editing in the pay screen.
+

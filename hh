@@ -4,233 +4,239 @@
   <title>Bar Tab Tracker</title>
   <style>
     body {
-      background-color: #000033;
-      color: white;
+      background-color: #d9ecff;
+      color: black;
       font-family: sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 10px;
     }
     .hidden {
       display: none;
     }
     button {
-      background-color: #1f1fbf;
-      color: white;
-      border: 2px solid #444;
-      padding: 16px;
-      margin: 8px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 18px;
-      width: 140px;
-    }
-    input, select {
-      padding: 12px;
-      margin: 6px;
-      border-radius: 6px;
-      border: none;
-      font-size: 16px;
-    }
-    .grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .item-category {
-      margin-top: 20px;
-    }
-    .item-category h3 {
-      margin-bottom: 10px;
-    }
-    .item-button {
-      display: inline-block;
-    }
-    pre {
-      background: #1e1e3f;
-      padding: 10px;
-      border-radius: 6px;
-      white-space: pre-wrap;
-    }
-    .till-btn {
-      background-color: #0044cc;
-      width: 160px;
+      font-size: 14px;
       font-weight: bold;
+      padding: 10px;
+      margin: 4px;
+      width: 100px;
+      height: 60px;
+      border: none;
+      border-radius: 4px;
+      color: white;
     }
-    #save-popup {
+    .yellow { background-color: #ffdc00; color: black; }
+    .pink { background-color: #ff69b4; }
+    .blue { background-color: #0074d9; }
+    .red { background-color: #ff4136; }
+    .green { background-color: #2ecc40; }
+    .orange { background-color: #ff851b; }
+    .purple { background-color: #b10dc9; }
+    .gray { background-color: #aaaaaa; color: black; }
+    .grid { display: flex; flex-wrap: wrap; gap: 6px; }
+    .topbar { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    pre { white-space: pre-wrap; background: #f0f0f0; padding: 10px; border-radius: 4px; }
+    .popup {
       position: fixed;
-      top: 20px;
+      top: 10px;
       left: 50%;
       transform: translateX(-50%);
       background: green;
       color: white;
-      padding: 10px 20px;
+      padding: 8px 16px;
       border-radius: 5px;
       display: none;
-      font-size: 20px;
+      font-size: 16px;
+      z-index: 999;
     }
   </style>
 </head>
 <body>
-  <div id="save-popup">Tab Saved!</div>  <div id="employee-select">
-    <h2>Select Employee</h2>
-    <div class="grid">
-      <button class="till-btn" onclick="selectEmployee('Tina')">Tina</button>
-      <button class="till-btn" onclick="selectEmployee('Cameron')">Cameron</button>
-      <button class="till-btn" onclick="selectEmployee('Chloe')">Chloe</button>
-      <button class="till-btn" onclick="selectEmployee('Danielle')">Danielle</button>
-      <button class="till-btn" onclick="selectEmployee('Lily')">Lily</button>
-    </div>
-  </div>  <div id="home" class="hidden">
-    <h2>Tabs</h2>
-    <div id="tab-buttons" class="grid"></div>
-    <button onclick="showNewTab()">New Tab</button>
-  </div>  <div id="new-tab" class="hidden">
-    <input id="new-name" placeholder="Enter name">
-    <button onclick="startTab()">Start Tab</button>
-    <button onclick="backToHome()">Back</button>
-  </div>  <div id="tab-view" class="hidden">
-    <h2 id="tab-name"></h2><div class="item-category">
-  <h3>Draught Beer</h3>
-  <div id="tap-items" class="grid"></div>
-</div>
-
-<div class="item-category">
-  <h3>Spirits / Mixers</h3>
-  <div id="spirit-items" class="grid"></div>
-</div>
-
-<div class="item-category">
-  <h3>Shots</h3>
-  <div id="shot-items" class="grid"></div>
-</div>
-
-<div class="item-category">
-  <h3>Snacks</h3>
-  <div id="snack-items" class="grid"></div>
-</div>
-
-<input id="custom-item" placeholder="Custom item">
-<button onclick="addCustomItem()">Add Custom</button>
-
-<div>
-  <h3>Tab Total:</h3>
+<div class="popup" id="save-popup">Tab Saved!</div><div id="employee-select">
+  <h2>Select Employee</h2>
+  <div class="grid">
+    <button class="blue" onclick="selectEmployee('Tina')">Tina</button>
+    <button class="blue" onclick="selectEmployee('Cameron')">Cameron</button>
+    <button class="blue" onclick="selectEmployee('Chloe')">Chloe</button>
+    <button class="blue" onclick="selectEmployee('Danielle')">Danielle</button>
+    <button class="blue" onclick="selectEmployee('Lily')">Lily</button>
+  </div>
+</div><div id="home" class="hidden">
+  <h2>Tabs</h2>
+  <div class="grid" id="tab-buttons"></div>
+  <button class="green" onclick="showNewTab()">New Tab</button>
+  <button class="orange" onclick="showPaidTabs()">Paid Tabs</button>
+</div><div id="new-tab" class="hidden">
+  <input id="new-name" placeholder="Enter name">
+  <button class="green" onclick="startTab()">Start Tab</button>
+  <button class="red" onclick="returnToEmployeeScreen()">Cancel</button>
+</div><div id="tab-view" class="hidden">
+  <div class="topbar">
+    <h2 id="tab-name"></h2>
+    <button class="gray" onclick="viewContributions()">Who Added What</button>
+  </div>
+  <div class="grid">
+    <button class="yellow" onclick="renderCategory('Draught', taps)">Draught Beer</button>
+    <button class="pink" onclick="renderCategory('Singles', spirits)">Single Spirits</button>
+    <button class="purple" onclick="renderCategory('Shots', shots)">Shots</button>
+    <button class="green" onclick="renderCategory('Snacks', snacks)">Snacks</button>
+  </div>
+  <div id="items" class="grid"></div>
+  <input id="custom-item" placeholder="Custom item">
+  <button class="gray" onclick="addCustomItem()">Add Custom</button>
   <pre id="tab-content"></pre>
-</div>
-<button onclick="saveTab()">Save</button>
-<button onclick="backToHome()">Back</button>
+  <button class="green" onclick="saveTab()">Save</button>
+  <button class="orange" onclick="payTab()">Pay</button>
+  <button class="red" onclick="returnToEmployeeScreen()">Back</button>
+</div><div id="paid-tabs" class="hidden">
+  <h2>Paid Tabs</h2>
+  <pre id="paid-content"></pre>
+  <button class="red" onclick="returnToEmployeeScreen()">Back</button>
+</div><script>
+  const taps = ["Carling", "Fosters", "Strongbow", "Guinness", "Madri"];
+  const spirits = ["Vodka + Coke", "Smirnoff", "Double Vodka", "Kraken + Coke"];
+  const shots = ["Tequila Rose", "Fireball", "Sambuca", "Jäger"];
+  const snacks = ["Crisps", "Bacon Fries"];
+  const prices = {
+    "Carling": 3.0, "Fosters": 2.9, "Strongbow": 3.1, "Guinness": 3.5, "Madri": 3.7,
+    "Vodka + Coke": 4.0, "Smirnoff": 3.8, "Double Vodka": 4.5, "Kraken + Coke": 4.5,
+    "Tequila Rose": 2.0, "Fireball": 2.0, "Sambuca": 2.0, "Jäger": 2.0,
+    "Crisps": 1.0, "Bacon Fries": 1.0
+  };
 
-  </div>  <script>
-    const taps = ["Carling", "Fosters", "Strongbow", "Guinness", "Madri", "John Smiths", "Cruzcampo", "Smiths"];
-    const spirits = ["Vodka + Coke", "Vodka + Lemon", "Double Vodka", "Kraken + Coke", "Smirnoff", "Jamesons"];
-    const shots = ["Tequila Rose", "Fireball", "Sambuca", "Jäger", "Baby Guinness", "Shanky's Whip", "Midori"];
-    const snacks = ["Crisps", "Bacon Fries", "Pork Cracklings"];
+  let currentName = "", currentTab = {}, currentEmployee = "", contributions = {};
+  let paidTabs = JSON.parse(localStorage.getItem("__PAID__") || "[]");
 
-    let currentName = "";
-    let currentTab = {};
-    let currentEmployee = "";
+  function selectEmployee(name) {
+    currentEmployee = name;
+    document.getElementById("employee-select").classList.add("hidden");
+    document.getElementById("home").classList.remove("hidden");
+    refreshTabButtons();
+  }
 
-    function selectEmployee(name) {
-      currentEmployee = name;
-      document.getElementById("employee-select").classList.add("hidden");
-      document.getElementById("home").classList.remove("hidden");
-      refreshTabButtons();
+  function refreshTabButtons() {
+    const c = document.getElementById("tab-buttons");
+    c.innerHTML = "";
+    Object.keys(localStorage).filter(k => k !== "__PAID__").forEach(name => {
+      const b = document.createElement("button");
+      b.className = "blue";
+      b.textContent = name;
+      b.onclick = () => loadTab(name);
+      c.appendChild(b);
+    });
+  }
+
+  function showNewTab() {
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("new-tab").classList.remove("hidden");
+  }
+
+  function startTab() {
+    currentName = document.getElementById("new-name").value;
+    if (!currentName) return;
+    currentTab = {};
+    contributions = {};
+    showTabView();
+  }
+
+  function loadTab(name) {
+    currentName = name;
+    currentTab = JSON.parse(localStorage.getItem(name) || "{}");
+    contributions = {};
+    showTabView();
+  }
+
+  function showTabView() {
+    document.getElementById("new-tab").classList.add("hidden");
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("tab-view").classList.remove("hidden");
+    document.getElementById("tab-name").textContent = currentName + ' - ' + currentEmployee;
+    renderCategory("Draught", taps);
+    updateTabContent();
+  }
+
+  function renderCategory(label, list) {
+    const c = document.getElementById("items");
+    c.innerHTML = "";
+    list.forEach(item => {
+      const b = document.createElement("button");
+      b.className = "gray";
+      b.textContent = item;
+      b.onclick = () => addItem(item);
+      c.appendChild(b);
+    });
+  }
+
+  function addItem(item) {
+    currentTab[item] = (currentTab[item] || 0) + 1;
+    if (!contributions[item]) contributions[item] = [];
+    contributions[item].push(currentEmployee);
+    updateTabContent();
+  }
+
+  function addCustomItem() {
+    const item = document.getElementById("custom-item").value;
+    if (!item) return;
+    currentTab[item] = (currentTab[item] || 0) + 1;
+    if (!contributions[item]) contributions[item] = [];
+    contributions[item].push(currentEmployee);
+    updateTabContent();
+    document.getElementById("custom-item").value = "";
+  }
+
+  function updateTabContent() {
+    const out = Object.entries(currentTab).map(([i, c]) => `${i}: ${c}`).join("\n");
+    document.getElementById("tab-content").textContent = out;
+  }
+
+  function saveTab() {
+    localStorage.setItem(currentName, JSON.stringify(currentTab));
+    const popup = document.getElementById("save-popup");
+    popup.style.display = "block";
+    setTimeout(() => {
+      popup.style.display = "none";
+      returnToEmployeeScreen();
+    }, 2000);
+  }
+
+  function returnToEmployeeScreen() {
+    document.querySelectorAll("#home, #new-tab, #tab-view, #paid-tabs")
+      .forEach(el => el.classList.add("hidden"));
+    document.getElementById("employee-select").classList.remove("hidden");
+  }
+
+  function viewContributions() {
+    const msg = Object.entries(contributions)
+      .map(([item, list]) => `${item}: ${list.join(", ")}`)
+      .join("\n");
+    alert(msg || "No contributions recorded yet.");
+  }
+
+  function payTab() {
+    let total = 0;
+    for (let item in currentTab) {
+      total += (prices[item] || 0) * currentTab[item];
     }
+    const record = {
+      name: currentName,
+      total: total.toFixed(2),
+      by: currentEmployee,
+      when: new Date().toLocaleString(),
+      items: { ...currentTab }
+    };
+    paidTabs.push(record);
+    localStorage.setItem("__PAID__", JSON.stringify(paidTabs));
+    localStorage.removeItem(currentName);
+    returnToEmployeeScreen();
+  }
 
-    function refreshTabButtons() {
-      const container = document.getElementById("tab-buttons");
-      container.innerHTML = "";
-      Object.keys(localStorage).forEach(name => {
-        const btn = document.createElement("button");
-        btn.className = "till-btn";
-        btn.textContent = name;
-        btn.onclick = () => loadTab(name);
-        container.appendChild(btn);
-      });
-    }
-
-    function showNewTab() {
-      document.getElementById("home").classList.add("hidden");
-      document.getElementById("new-tab").classList.remove("hidden");
-    }
-
-    function startTab() {
-      const name = document.getElementById("new-name").value.trim();
-      if (!name) return;
-      currentName = name;
-      currentTab = {};
-      showTabView();
-    }
-
-    function loadTab(name) {
-      currentName = name;
-      currentTab = JSON.parse(localStorage.getItem(currentName)) || {};
-      showTabView();
-    }
-
-    function showTabView() {
-      document.getElementById("home").classList.add("hidden");
-      document.getElementById("new-tab").classList.add("hidden");
-      document.getElementById("tab-view").classList.remove("hidden");
-      document.getElementById("tab-name").textContent = `${currentName} - ${currentEmployee}`;
-      renderItems();
-      updateTabContent();
-    }
-
-    function renderItems() {
-      renderCategory("tap-items", taps);
-      renderCategory("spirit-items", spirits);
-      renderCategory("shot-items", shots);
-      renderCategory("snack-items", snacks);
-    }
-
-    function renderCategory(containerId, items) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = "";
-      items.forEach(item => {
-        const btn = document.createElement("button");
-        btn.className = "item-button till-btn";
-        btn.textContent = item;
-        btn.onclick = () => addItem(item);
-        container.appendChild(btn);
-      });
-    }
-
-    function addItem(item) {
-      currentTab[item] = (currentTab[item] || 0) + 1;
-      updateTabContent();
-    }
-
-    function addCustomItem() {
-      const item = document.getElementById("custom-item").value.trim();
-      if (!item) return;
-      if (!currentTab[item]) currentTab[item] = 0;
-      currentTab[item] += 1;
-      document.getElementById("custom-item").value = "";
-      updateTabContent();
-    }
-
-    function updateTabContent() {
-      const output = Object.entries(currentTab)
-        .map(([item, count]) => `${item}: ${count}`)
-        .join("\n");
-      document.getElementById("tab-content").textContent = output;
-    }
-
-    function saveTab() {
-      localStorage.setItem(currentName, JSON.stringify(currentTab));
-      const popup = document.getElementById("save-popup");
-      popup.style.display = "block";
-      setTimeout(() => {
-        popup.style.display = "none";
-        backToHome();
-      }, 2000);
-    }
-
-    function backToHome() {
-      document.querySelectorAll("#home, #new-tab, #tab-view")
-        .forEach(el => el.classList.add("hidden"));
-      document.getElementById("home").classList.remove("hidden");
-      refreshTabButtons();
-    }
-  </script></body>
+  function showPaidTabs() {
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("paid-tabs").classList.remove("hidden");
+    document.getElementById("paid-content").textContent = paidTabs.map(r =>
+      `${r.name} | £${r.total} | ${r.by} | ${r.when}\n` +
+      Object.entries(r.items).map(([i, c]) => `- ${i}: ${c}`).join("\n") +
+      "\n--------------------------------------"
+    ).join("\n");
+  }
+</script></body>
 </html>
